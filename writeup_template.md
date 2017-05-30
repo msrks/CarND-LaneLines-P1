@@ -58,10 +58,11 @@ cv2.HoughLinesP(img, rho, theta, threshold, np.array([]),
 update `draw_lines()` function:
 
 1. The slopes were calculated for all the detected lines.
-2. The lines were grouped into two gropus (rising, falling).
-3. The lines with a slope below +/- 15° are ignored
-4. average slope and bias
-5. draw lines
+2. convert slope to theta
+3. The lines were grouped into two gropus (rising, falling).
+4. The lines with a theta below +/- 10° are ignored
+5. average thetas and bias
+6. draw lines
 
 ```
 #cv2.line(img, (x1, y1), (x2, y2), color, thickness)
