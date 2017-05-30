@@ -1,47 +1,86 @@
-# **Finding Lane Lines on the Road** 
-
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Finding Lane Lines on the Road**
+# Finding Lane Lines on the Road
 
 The goals / steps of this project are the following:
 * Make a pipeline that finds lane lines on the road
 * Reflect on your work in a written report
 
+### Pipeline
 
-[//]: # (Image References)
+#### 1. read the image
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
+<img src="./test_images/solidWhiteCurve.jpg" width="400">
 
----
+#### 2. convert it to grayscale
 
-### Reflection
+```
+cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+```
 
-### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
+<img src="./test_images_output/solidWhiteCurve_grayed.jpg" width="400">
 
-My pipeline consisted of 5 steps. First, I converted the images to grayscale, then I .... 
+#### 3. blur it using a gaussian kernel
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+```
+kernel_size = 5
+cv2.GaussianBlur(img, (kernel_size, kernel_size), 0)
+```
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
+<img src="./test_images_output/solidWhiteCurve_blurred.jpg" width="400">
 
-![alt text][image1]
+#### 4. detect the edges
+
+```
+cv2.Canny(img, low_threshold, high_threshold)
+```
+
+<img src="./test_images_output/solidWhiteCurve_edge.jpg" width="400">
+
+#### 5. narrow down the seach area to a region of inetest
+
+```
+cv2.fillPoly(mask, vertices, ignore_mask_color)
+masked_image = cv2.bitwise_and(img, mask)
+```
+
+<img src="./test_images_output/solidWhiteCurve_mask.jpg" width="400">
+
+#### 6. find the lines using hough transform
+
+```
+cv2.HoughLinesP(img, rho, theta, threshold, np.array([]),
+                minLineLength=min_line_len, maxLineGap=max_line_gap)
+```
+
+<img src="./test_images_output/solidWhiteCurve_lines.jpg" width="400">
+
+#### 7. draw the lines
+
+update `draw_lines()` function:
+
+1. The slopes were calculated for all the detected lines.
+2. The lines were grouped into two gropus (rising, falling).
+3. The lines with a slope below +/- 15° are ignored
+4. average slope and bias
+5. draw lines
+
+```
+#cv2.line(img, (x1, y1), (x2, y2), color, thickness)
+draw_lines(img)
+
+cv2.addWeighted(initial_img, α, img, β, λ)
+```
+
+<img src="./test_images_output/solidWhiteCurve_result.jpg" width="400">
+
+### Identify potential shortcomings with your current pipeline
+
+* I do not know that it will work if it's night
+* There are not necessarily lanes
 
 
-### 2. Identify potential shortcomings with your current pipeline
+### Suggest possible improvements to your pipeline
 
+To make pipeline more robust ...
 
-One potential shortcoming would be what would happen when ... 
-
-Another shortcoming could be ...
-
-
-### 3. Suggest possible improvements to your pipeline
-
-A possible improvement would be to ...
-
-Another potential improvement could be to ...
+* search more robust parameter by trying other condition
+* apply machine learning
