@@ -16,7 +16,7 @@ The goals / steps of this project are the following:
 cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 ```
 
-<img src="./test_images_output/solidWhiteCurve_grayed.jpg" width="400">
+<img src="./test_images_output/solidWhiteCurve_gray.jpg" width="400">
 
 #### 3. blur it using a gaussian kernel
 
